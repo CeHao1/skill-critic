@@ -1,0 +1,10 @@
+# basic
+numpy
+matplotlib
+mpi4py
+wandb
+
+# specific
+torch
+
+# how to install: pip install -r requirement.txt
