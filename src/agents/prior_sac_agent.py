@@ -1,9 +1,9 @@
 import torch
 import numpy as np
 
-from spirl.rl.agents.ac_agent import SACAgent
-from spirl.utils.general_utils import ParamDict, ConstantSchedule, AttrDict
-from spirl.utils.pytorch_utils import check_shape, map2torch
+from src.agents.ac_agent import SACAgent
+from src.utils.general_utils import ParamDict, ConstantSchedule, AttrDict
+from src.utils.pytorch_utils import check_shape, map2torch
 
 
 class ActionPriorSACAgent(SACAgent):

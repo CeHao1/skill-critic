@@ -2,10 +2,11 @@ import torch
 import os
 import numpy as np
 
-from spirl.rl.components.agent import BaseAgent
-from spirl.utils.general_utils import ParamDict, map_dict, AttrDict
-from spirl.utils.pytorch_utils import ten2ar, avg_grad_norm, TensorModule, check_shape, map2torch, map2np
-from spirl.rl.utils.mpi import sync_networks
+from src.agents.agent import BaseAgent
+from src.utils.py_utils import ParamDict, AttrDict
+from src.utils.general_utils import map_dict
+from src.utils.pytorch_utils import ten2ar, avg_grad_norm, TensorModule, check_shape, map2torch, map2np
+from src.utils.mpi_utils import sync_networks
 
 
 class ACAgent(BaseAgent):

@@ -2,9 +2,9 @@ import numpy as np
 import contextlib
 from collections import deque
 
-from spirl.utils.general_utils import listdict2dictlist, AttrDict, ParamDict, obj2np
-from spirl.modules.variational_inference import MultivariateGaussian
-from spirl.rl.utils.reward_fcns import sparse_threshold
+from src.utils.general_utils import listdict2dictlist, obj2np
+from src.utils.py_utils import AttrDict, ParamDict
+from src.modules.variational_inference import MultivariateGaussian
 
 
 class Sampler:

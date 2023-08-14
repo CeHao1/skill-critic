@@ -1,8 +1,8 @@
 import torch
 
-from spirl.modules.variational_inference import MultivariateGaussian
-from spirl.rl.components.policy import Policy
-from spirl.utils.general_utils import ParamDict
+from src.modules.variational_inference import MultivariateGaussian
+from src.policies.policy import Policy
+from src.utils.general_utils import ParamDict
 
 
 class UniformGaussianPolicy(Policy):

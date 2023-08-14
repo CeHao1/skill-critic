@@ -3,9 +3,10 @@ import contextlib
 
 import numpy as np
 
-from spirl.rl.components.agent import BaseAgent
-from spirl.utils.general_utils import ParamDict, split_along_axis, AttrDict
-from spirl.utils.pytorch_utils import map2torch, map2np, no_batchnorm_update
+from src.agents.agent import BaseAgent
+from src.utils.py_utils import ParamDict, AttrDict
+from src.utils.general_utils import split_along_axis 
+from src.utils.pytorch_utils import map2torch, map2np, no_batchnorm_update
 
 
 class SkillSpaceAgent(BaseAgent):

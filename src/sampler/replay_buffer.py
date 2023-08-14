@@ -4,8 +4,8 @@ import pickle
 import os
 import copy
 
-from spirl.utils.general_utils import AttrDict, RecursiveAverageMeter, ParamDict
-
+from src.utils.general_utils import RecursiveAverageMeter
+from src.utils.py_utils import AttrDict, ParamDict
 
 class ReplayBuffer:
     """Stores arbitrary rollout outputs that are provided by AttrDicts."""

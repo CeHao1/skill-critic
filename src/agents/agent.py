@@ -6,14 +6,14 @@ from contextlib import contextmanager
 from functools import partial
 from torch.optim import Adam, SGD
 
-from spirl.utils.general_utils import ParamDict, get_clipped_optimizer, AttrDict, prefix_dict, map_dict, \
+from src.utils.general_utils import ParamDict, get_clipped_optimizer, AttrDict, prefix_dict, map_dict, \
                                         nan_hook, np2obj, ConstantSchedule
-from spirl.utils.pytorch_utils import RAdam, remove_grads, map2np, map2torch
-from spirl.utils.vis_utils import add_caption_to_img, add_captions_to_seq
-from spirl.rl.components.normalization import DummyNormalizer
-from spirl.rl.components.policy import Policy
-from spirl.components.checkpointer import CheckpointHandler
-from spirl.rl.utils.mpi import sync_grads
+from src.utils.pytorch_utils import RAdam, remove_grads, map2np, map2torch
+from src.utils.vis_utils import add_caption_to_img, add_captions_to_seq
+from src.modules.normalization import DummyNormalizer
+from src.policies.policy import Policy
+from src.utils.checkpoint_utils import CheckpointHandler
+from src.utils.mpi_utils import sync_grads
 
 
 class BaseAgent(nn.Module):

@@ -1,13 +1,13 @@
 import torch.nn as nn
 import copy
 
-from spirl.modules.layers import LayerBuilderParams
-from spirl.modules.mdn import MDN, GMM
-from spirl.modules.subnetworks import Predictor, HybridConvMLPEncoder, Encoder
-from spirl.modules.variational_inference import MultivariateGaussian
-from spirl.rl.components.policy import Policy
-from spirl.utils.general_utils import ParamDict, AttrDict
-from spirl.utils.pytorch_utils import RemoveSpatial
+from src.modules.layers import LayerBuilderParams
+from src.modules.mdn import MDN, GMM
+from src.modules.subnetworks import Predictor, HybridConvMLPEncoder, Encoder
+from src.modules.variational_inference import MultivariateGaussian
+from src.policies.policy import Policy
+from src.utils.general_utils import ParamDict, AttrDict
+from src.utils.pytorch_utils import RemoveSpatial
 
 
 class MLPPolicy(Policy):
