@@ -8,13 +8,13 @@ from torch.optim import Adam, SGD
 
 from src.utils.general_utils import ParamDict, get_clipped_optimizer, AttrDict, prefix_dict, map_dict, \
                                         nan_hook, np2obj, ConstantSchedule
-from src.utils.pytorch_utils import RAdam, remove_grads, map2np, map2torch
+from src.utils.pytorch_utils import RAdam, remove_grads, map2np, map2torch, make_one_hot
 from src.utils.vis_utils import add_caption_to_img, add_captions_to_seq
 from src.modules.normalization import DummyNormalizer
 from src.policies.policy import Policy
 from src.utils.checkpoint_utils import CheckpointHandler
 from src.utils.mpi_utils import sync_grads
-
+from src.modules.variational_inference import MultivariateGaussian
 
 class BaseAgent(nn.Module):
     def __init__(self, config):
@@ -24,6 +24,7 @@ class BaseAgent(nn.Module):
         self._is_train = True           # indicates whether agent should sample in training mode
         self._rand_act_mode = False     # indicates whether agent should act randomly (for warmup collection)
         self._rollout_mode = False      # indicates whether agent is run in rollout mode (omit certain policy outputs)
+        self._deterministic_act_mode = False # if true, use the mean value of policy distribution
         self._obs_normalizer = self._hp.obs_normalizer(self._hp.obs_normalizer_params)
 
     def _default_hparams(self):
@@ -71,7 +72,9 @@ class BaseAgent(nn.Module):
 
     def log_outputs(self, logging_stats, rollout_storage, logger, log_images, step):
         """Visualizes/logs all training outputs."""
-        logger.log_scalar_dict(logging_stats, prefix='train' if self._is_train else 'val', step=step)
+        
+        if logging_stats is not None:
+            logger.log_scalar_dict(logging_stats, prefix='train' if self._is_train else 'val', step=step)
 
         if log_images:
             assert rollout_storage is not None      # need rollout data for image logging
@@ -203,6 +206,29 @@ class BaseAgent(nn.Module):
     def update_iterations(self):
         return self._hp.update_iterations
 
+    # ============== action determinstic related =================
+    @contextmanager
+    def deterministic_act_mode(self):
+        # assert False
+        self._deterministic_act_mode = True
+        yield
+        self._deterministic_act_mode = False
+
+    def switch_on_deterministic_action_mode(self):
+        # assert False
+        self._deterministic_act_mode = True
+
+    def switch_off_deterministic_action_mode(self):
+        self._deterministic_act_mode = False
+
+    def _post_process_policy_output(self, policy_output):
+        if self._deterministic_act_mode:
+            # print('post !')
+            if 'dist' in policy_output and isinstance(policy_output.dist, MultivariateGaussian):
+                policy_output.ori_action = policy_output.action
+                policy_output.action = policy_output.dist.mean
+        return policy_output
+                
 
 class HierarchicalAgent(BaseAgent):
     """Implements a basic hierarchical agent with high-level and low-level policy/policies."""
@@ -225,7 +251,7 @@ class HierarchicalAgent(BaseAgent):
         })
         return super()._default_hparams().overwrite(default_dict)
 
-    def act(self, obs):
+    def act(self, obs, last_hl_output=None): 
         """Output dict contains is_hl_step in case high-level action was performed during this action."""
         obs_input = obs[None] if len(obs.shape) == 1 else obs    # need batch input for agents
         output = AttrDict()
@@ -237,6 +263,8 @@ class HierarchicalAgent(BaseAgent):
                 self._last_hl_output.action = self._last_hl_output.action[None]  # add batch dim if necessary
                 self._last_hl_output.log_prob = self._last_hl_output.log_prob[None]
         else:
+            if last_hl_output is not None:
+                self._last_hl_output = last_hl_output
             output.is_hl_step = False
         output.update(prefix_dict(self._last_hl_output, 'hl_'))
 
@@ -344,3 +372,17 @@ class FixedIntervalHierarchicalAgent(HierarchicalAgent):
     def reset(self):
         super().reset()
         self._steps_since_hl = 0     # start new episode with high-level step
+
+class FixedIntervalTimeIndexedHierarchicalAgent(FixedIntervalHierarchicalAgent):
+    def make_ll_obs(self, obs, hl_action):
+        """Creates low-level agent's observation from env observation,  HL action and time index."""
+        idx = torch.tensor([self._steps_since_hl % self._hp.hl_interval])
+        dim_of_obs = 1 if len(obs.shape) == 1 else obs.shape[0]
+        one_hot_torch = make_one_hot(idx, self._hp.hl_interval).repeat(dim_of_obs, 1)
+        one_hot_np = map2np(one_hot_torch)
+
+        if len(obs.shape) == 1:
+            one_hot_np = one_hot_np.squeeze()
+
+        return np.concatenate((obs, hl_action, one_hot_np), axis=-1)
+    

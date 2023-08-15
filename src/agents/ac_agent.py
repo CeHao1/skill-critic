@@ -27,19 +27,19 @@ class ACAgent(BaseAgent):
         return super()._default_hparams().overwrite(default_dict)
 
     def _act(self, obs):
-        # TODO implement non-sampling validation mode
         obs = map2torch(self._obs_normalizer(obs), self._hp.device)
         if len(obs.shape) == 1:     # we need batched inputs for policy
             policy_output = self._remove_batch(self.policy(obs[None]))
-            if 'dist' in policy_output:
-                del policy_output['dist']
-            return map2np(policy_output)
-        return map2np(self.policy(obs))
+            policy_output = map2np(policy_output)
+        else:
+            policy_output= map2np(self.policy(obs))
+        policy_output = self._post_process_policy_output(policy_output)
+        return policy_output
 
     def _act_rand(self, obs):
         policy_output = self.policy.sample_rand(map2torch(obs, self.policy.device))
-        if 'dist' in policy_output:
-            del policy_output['dist']
+        # if 'dist' in policy_output:
+        #     del policy_output['dist']
         return map2np(policy_output)
 
     def state_dict(self, *args, **kwargs):
@@ -105,13 +105,15 @@ class SACAgent(ACAgent):
             'reward_scale': 1.0,      # SAC reward scale
             'clip_q_target': False,   # if True, clips Q target
             'target_entropy': None,   # target value for automatic entropy tuning, if None uses -action_dim
+            'visualize_values': False, # visualize action distribution and q targets
         })
         return super()._default_hparams().overwrite(default_dict)
 
     def update(self, experience_batch):
         """Updates actor and critics."""
         # push experience batch into replay buffer
-        self.add_experience(experience_batch)
+        if experience_batch is not None:
+            self.add_experience(experience_batch)
 
         for _ in range(self._hp.update_iterations):
             # sample batch and normalize
@@ -170,6 +172,7 @@ class SACAgent(ACAgent):
                 alpha=self.alpha,
                 pi_log_prob=policy_output.log_prob.mean(),
                 policy_entropy=policy_output.dist.entropy().mean(),
+                avg_sigma = policy_output.dist.sigma.mean(),
                 q_target=q_target.mean(),
                 q_1=qs[0].mean(),
                 q_2=qs[1].mean(),
@@ -274,7 +277,10 @@ class SACAgent(ACAgent):
 
     @property
     def alpha(self):
-        return self._log_alpha().exp()
+        if self._hp.fixed_alpha is not None:
+            return self._hp.fixed_alpha
+        else:
+            return self._log_alpha().exp()
 
     @property
     def schedule_steps(self):

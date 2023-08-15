@@ -81,6 +81,16 @@ def make_one_hot(index, length):
     batchwise_assign(oh, index, 1)
     return oh
 
+def parse_one_hot(oh):
+    """ Convert one-hot to the indices"""
+    if len(oh.shape) == 1:
+        oh_input = oh[None]
+    else:
+        oh_input = oh
+
+    position = torch.where(oh_input == torch.tensor(1))
+    return position[1]
+
 
 class DummyModule(nn.Module):
     def __init__(self, *args, **kwargs):
@@ -225,7 +235,7 @@ def avg_grad_norm(model):
 
 def check_shape(t, target_shape):
     if not list(t.shape) == target_shape:
-        raise ValueError(f"Temsor should have shape {target_shape} but has shape {list(t.shape)}!")
+        raise ValueError(f"Tensor should have shape {target_shape} but has shape {list(t.shape)}!")
 
 
 def mask_out(tensor, start_ind, end_ind, value, dim=1):

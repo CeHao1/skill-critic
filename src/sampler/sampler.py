@@ -68,7 +68,7 @@ class Sampler:
 
         return listdict2dictlist(experience_batch), step
 
-    def sample_episode(self, is_train, render=False):
+    def sample_episode(self, is_train, render=False, deterministic_action=False):
         """Samples one episode from the environment."""
         self.init(is_train)
         episode, done = [], False
@@ -80,7 +80,7 @@ class Sampler:
                         agent_output = self.sample_action(self._obs)
                         if agent_output.action is None:
                             break
-                        agent_output = self._postprocess_agent_output(agent_output)
+                        agent_output = self._postprocess_agent_output(agent_output, deterministic_action=deterministic_action)
                         if render:
                             render_obs = self._env.render()
                         obs, reward, done, info = self._env.step(agent_output.action)
@@ -105,7 +105,8 @@ class Sampler:
 
     def get_episode_info(self):
         episode_info = AttrDict(episode_reward=self._episode_reward,
-                                episode_length=self._episode_step,)
+                                episode_length=self._episode_step,
+                                episode_success=np.clip(self._episode_reward, 0, 1))
         if hasattr(self._env, "get_episode_info"):
             episode_info.update(self._env.get_episode_info())
         return episode_info
@@ -127,8 +128,12 @@ class Sampler:
         """Optionally post-process observation."""
         return obs
 
-    def _postprocess_agent_output(self, agent_output):
+    def _postprocess_agent_output(self, agent_output, deterministic_action=False):
         """Optionally post-process / store agent output."""
+        if deterministic_action:
+            if isinstance(agent_output.dist, MultivariateGaussian):
+                agent_output.ori_action = agent_output.action
+                agent_output.action = agent_output.dist.mean[0]
         return agent_output
 
 
@@ -144,6 +149,7 @@ class HierarchicalSampler(Sampler):
         hl_experience_batch, ll_experience_batch = [], []
 
         env_steps, hl_step = 0, 0
+        self.last_hl_obs = self._obs
         with self._env.val_mode() if not is_train else contextlib.suppress():
             with self._agent.val_mode() if not is_train else contextlib.suppress():
                 with self._agent.rollout_mode():
