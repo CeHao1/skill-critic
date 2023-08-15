@@ -34,7 +34,7 @@ class TopOfNEvaluator:
         for metric_name in self.metrics:
             default_value = 0. if metric_name in TopOfNEvaluator.HIGHER_IS_BETTER_METRICS else np.inf
             self.batch_eval_buffer[metric_name] = get_init_array(default_value)
-        self.batch_eval_buffer.aux_outputs = np.empty(self._hp.batch_size, dtype=np.object)
+        self.batch_eval_buffer.aux_outputs = np.empty(self._hp.batch_size, dtype=object)
 
     def eval_single(self, inputs, model_output, sample_idx):
         bsize = self._hp.batch_size

@@ -23,7 +23,14 @@ class Loss():
         :param targets:
         :return:
         """
-        error = self.compute(*args, **kwargs) * weights
+        # error = self.compute(*args, **kwargs) * weights
+
+        error = self.compute(*args, **kwargs) 
+        if weights is not 1:
+            assert error.shape[-1] == len(weights)
+            for idx in range(error.shape[-1]):
+                error[:,:,idx] *= weights[idx]
+
         if reduction != 'mean':
             raise NotImplementedError
         loss = AttrDict(value=error.mean(), weight=self.weight)
@@ -32,6 +39,15 @@ class Loss():
             loss.breakdown = error.detach().mean(reduce_dim) if reduce_dim else error.detach()
         if store_raw:
             loss.error_mat = error.detach()
+
+
+        separate_dim = weights is not 1 # more than one dim
+        if separate_dim:
+            error_separate = []
+            for idx in range(error.shape[-1]):
+                error_separate.append(error[:,:,idx].mean())
+            loss.error_separate = error_separate
+
         return loss
     
     def compute(self, estimates, targets):

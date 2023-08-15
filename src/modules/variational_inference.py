@@ -47,6 +47,10 @@ class Gaussian:
         return 0.5 + 0.5 * math.log(2 * math.pi) + torch.log(self.sigma)
 
     @property
+    def mean(self):
+        return self.mu
+
+    @property
     def sigma(self):
         if self._sigma is None:
             self._sigma = self.log_sigma.exp()

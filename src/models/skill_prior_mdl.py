@@ -86,6 +86,8 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
             'reconstruction_mse_weight': 1.,    # weight of MSE reconstruction loss
             'kl_div_weight': 1.,                # weight of KL divergence loss
             'target_kl': None,                  # if not None, adds automatic beta-tuning to reach target KL divergence
+            'learned_prior_weight' : 1.,        # weight for train learned prior
+            'action_dim_weights': 1,            # the weights for reconstruction mes loss at each dimension
         })
 
         # loading pre-trained components
@@ -115,6 +117,16 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         :arg inputs: dict with 'states', 'actions', 'images' keys from data loader
         :arg use_learned_prior: if True, decodes samples from learned prior instead of posterior, used for RL
         """
+
+        '''
+        Summary the meaning of each variable
+        self.q = encoder, self.decoder, self.p = prior
+        output.q = z~encoder()
+        output.p = N(0,I)
+        output.q_hat = z~prior()
+        if use_learned_prior(argument): make p = q_hat, why???
+        '''
+
         output = AttrDict()
         inputs.observations = inputs.actions    # for seamless evaluation
 
@@ -128,6 +140,15 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         output.q_hat = self.compute_learned_prior(self._learned_prior_input(inputs))
         if use_learned_prior:
             output.p = output.q_hat     # use output of learned skill prior for sampling
+
+        '''
+        if self._sample_prior:
+            1) z =   p.sample(), sample from N(0,I) or prior 
+            2) z_q = q.sample(). sample from encoder
+        else: ordinary condition
+            1) z =   q.sample(), sample from encoder
+            2) z_q = z as well.
+        '''
 
         # sample latent variable
         output.z = output.p.sample() if self._sample_prior else output.q.sample()
@@ -151,7 +172,7 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         # reconstruction loss, assume unit variance model output Gaussian
         losses.rec_mse = NLL(self._hp.reconstruction_mse_weight) \
             (Gaussian(model_output.reconstruction, torch.zeros_like(model_output.reconstruction)),
-             self._regression_targets(inputs))
+             self._regression_targets(inputs), weights=self._hp.action_dim_weights)
 
         # KL loss
         losses.kl_loss = KLDivLoss(self.beta)(model_output.q, model_output.p)
