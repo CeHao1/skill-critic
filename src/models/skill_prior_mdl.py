@@ -26,7 +26,7 @@ from src.modules.flow_models import ConditionedFlowModel
 
 
 class SkillPriorMdl(BaseModel, ProbabilisticModel):
-    """Skill embedding + prior model for SPIRL algorithm."""
+    """Skill embedding + prior model for src algorithm."""
     def __init__(self, params, logger=None):
         BaseModel.__init__(self, logger)
         ProbabilisticModel.__init__(self)
@@ -113,7 +113,7 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         self.p = self._build_prior_ensemble()
 
     def forward(self, inputs, use_learned_prior=False):
-        """Forward pass of the SPIRL model.
+        """Forward pass of the src model.
         :arg inputs: dict with 'states', 'actions', 'images' keys from data loader
         :arg use_learned_prior: if True, decodes samples from learned prior instead of posterior, used for RL
         """
@@ -163,8 +163,8 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         return output
 
     def loss(self, model_output, inputs):
-        """Loss computation of the SPIRL model.
-        :arg model_output: output of SPIRL model forward pass
+        """Loss computation of the src model.
+        :arg model_output: output of src model forward pass
         :arg inputs: dict with 'states', 'actions', 'images' keys from data loader
         """
         losses = AttrDict()
@@ -188,10 +188,10 @@ class SkillPriorMdl(BaseModel, ProbabilisticModel):
         return losses
 
     def _log_outputs(self, model_output, inputs, losses, step, log_images, phase, logger, **logging_kwargs):
-        """Optionally visualizes outputs of SPIRL model.
-        :arg model_output: output of SPIRL model forward pass
+        """Optionally visualizes outputs of src model.
+        :arg model_output: output of src model forward pass
         :arg inputs: dict with 'states', 'actions', 'images' keys from data loader
-        :arg losses: output of SPIRL model loss() function
+        :arg losses: output of src model loss() function
         :arg step: current training iteration
         :arg log_images: if True, log image visualizations (otherwise only scalar losses etc get logged automatically)
         :arg phase: 'train' or 'val'

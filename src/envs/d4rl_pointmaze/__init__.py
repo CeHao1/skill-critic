@@ -1,13 +1,13 @@
-from spirl.envs.d4rl_pointmaze.maze_layouts import rand_layout
-from spirl.envs.d4rl_pointmaze.maze_model import MazeEnv
-from spirl.envs.d4rl_pointmaze.maze_strings import maze_name_space
+from src.envs.d4rl_pointmaze.maze_layouts import rand_layout
+from src.envs.d4rl_pointmaze.maze_model import MazeEnv
+from src.envs.d4rl_pointmaze.maze_strings import maze_name_space
 from gym.envs.registration import register
 
 
 
 register(
     id='maze2d-randMaze0S40-ac-v0',
-    entry_point='spirl.envs.d4rl_pointmaze:MazeEnv',
+    entry_point='src.envs.d4rl_pointmaze:MazeEnv',
     max_episode_steps=800,
     kwargs={
         'maze_spec': rand_layout(seed=0, size=40),
@@ -24,7 +24,7 @@ register(
 
 register(
     id='maze2d-mMaze1-v0',
-    entry_point='spirl.envs.d4rl_pointmaze:MazeEnv',
+    entry_point='src.envs.d4rl_pointmaze:MazeEnv',
     max_episode_steps=800,
     kwargs={
         'maze_spec': maze_name_space['m_maze1'],
@@ -40,7 +40,7 @@ register(
 
 register(
     id='maze2d-mMaze2-v0',
-    entry_point='spirl.envs.d4rl_pointmaze:MazeEnv',
+    entry_point='src.envs.d4rl_pointmaze:MazeEnv',
     max_episode_steps=800,
     kwargs={
         'maze_spec': maze_name_space['m_maze2'],
@@ -55,7 +55,7 @@ register(
 
 register(
     id='maze2d-mMaze3-v0',
-    entry_point='spirl.envs.d4rl_pointmaze:MazeEnv',
+    entry_point='src.envs.d4rl_pointmaze:MazeEnv',
     max_episode_steps=800,
     kwargs={
         'maze_spec': maze_name_space['m_maze3'],

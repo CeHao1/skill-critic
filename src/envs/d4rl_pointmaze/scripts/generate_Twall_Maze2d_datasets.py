@@ -1,8 +1,8 @@
 import logging
-from spirl.envs.d4rl_pointmaze import waypoint_controller
-from spirl.envs.d4rl_pointmaze import maze_model, maze_layouts
+from src.envs.d4rl_pointmaze import waypoint_controller
+from src.envs.d4rl_pointmaze import maze_model, maze_layouts
 
-from spirl.envs.d4rl_pointmaze.maze_strings import maze_name_space
+from src.envs.d4rl_pointmaze.maze_strings import maze_name_space
 
 import numpy as np
 import pickle

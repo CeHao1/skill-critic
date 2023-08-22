@@ -4,8 +4,8 @@ import gym
 import tqdm
 import matplotlib.pyplot as plt
 
-from spirl.envs.d4rl.pointmaze.maze_model import MazeEnv
-from spirl.envs.d4rl.pointmaze.semantic_maze_layouts import SEMANTIC_MAZE_1_LAYOUT, SEMANTIC_MAZE_2_LAYOUT, \
+from src.envs.d4rl.pointmaze.maze_model import MazeEnv
+from src.envs.d4rl.pointmaze.semantic_maze_layouts import SEMANTIC_MAZE_1_LAYOUT, SEMANTIC_MAZE_2_LAYOUT, \
                                                     semantic_layout2str, xy2id
 
 

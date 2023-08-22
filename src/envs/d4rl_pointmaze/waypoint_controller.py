@@ -1,7 +1,7 @@
 import numpy as np
-from spirl.envs.d4rl_pointmaze import q_iteration
-from spirl.envs.d4rl_pointmaze.gridcraft import grid_env
-from spirl.envs.d4rl_pointmaze.gridcraft import grid_spec
+from src.envs.d4rl_pointmaze import q_iteration
+from src.envs.d4rl_pointmaze.gridcraft import grid_env
+from src.envs.d4rl_pointmaze.gridcraft import grid_spec
 
 
 ZEROS = np.zeros((2,), dtype=np.float32)

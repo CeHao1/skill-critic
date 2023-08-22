@@ -3,7 +3,7 @@ import numpy as np
 import gym
 import gym.spaces
 
-from spirl.envs.d4rl_pointmaze.gridcraft.grid_spec import REWARD, REWARD2, REWARD3, REWARD4, WALL, LAVA, TILES, START, RENDER_DICT
+from src.envs.d4rl_pointmaze.gridcraft.grid_spec import REWARD, REWARD2, REWARD3, REWARD4, WALL, LAVA, TILES, START, RENDER_DICT
 
 ACT_NOOP = 0
 ACT_UP = 1

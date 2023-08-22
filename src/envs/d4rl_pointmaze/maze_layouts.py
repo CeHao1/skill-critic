@@ -2,7 +2,7 @@ import numpy as np
 from scipy.signal import convolve2d
 import re
 
-from spirl.envs.d4rl_pointmaze.maze_strings import *
+from src.envs.d4rl_pointmaze.maze_strings import *
 
 
 def compute_sampling_probs(maze_layout, filter, temp):

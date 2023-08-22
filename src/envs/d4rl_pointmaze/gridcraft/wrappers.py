@@ -1,6 +1,6 @@
 import numpy as np
-from spirl.envs.d4rl.pointmaze.gridcraft.grid_env import REWARD, GridEnv
-from spirl.envs.d4rl.pointmaze.gridcraft.wrappers import ObsWrapper
+from src.envs.d4rl.pointmaze.gridcraft.grid_env import REWARD, GridEnv
+from src.envs.d4rl.pointmaze.gridcraft.wrappers import ObsWrapper
 from gym.spaces import Box
 
 

@@ -7,7 +7,7 @@ from src.agents.prior_sac_agent import ActionPriorSACAgent
 from src.agents.hl_agent  import HLInheritAgent
 from src.agents.skill_space_agent import SkillSpaceAgent, ACSkillSpaceAgent
 
-from src.envs.maze import ACRandMaze0S40Env, ACmMaze1, ACmMaze2, ACmMaze3
+from src.envs.wrapper.maze import ACRandMaze0S40Env, ACmMaze1, ACmMaze2, ACmMaze3
 
 class MazeAgent:
     chosen_maze = ACmMaze2
@@ -80,7 +80,7 @@ class MazeNoUpdateAgent(MazeAgent, SACAgent):
 class MazeACActionPriorSACAgent(ActionPriorSACAgent, MazeAgent):
     def __init__(self, *args, **kwargs):
         ActionPriorSACAgent.__init__(self, *args, **kwargs)
-        from src.components.replay_buffer import SplitObsUniformReplayBuffer
+        from src.sampler.replay_buffer import SplitObsUniformReplayBuffer
         # TODO: don't hardcode this for res 32x32
         self.vis_replay_buffer = SplitObsUniformReplayBuffer({'capacity': 1e7, 'unused_obs_size': 6144,})
 
@@ -108,36 +108,11 @@ class MazeACActionPriorSACAgent(ActionPriorSACAgent, MazeAgent):
         states = self.vis_replay_buffer.get().observation[:size, :2]
         plot_maze_fun(states, logger, step, size)
 
-class MazeHLSkillAgent(HLSKillAgent, MazeAgent):
-    def __init__(self, *args, **kwargs):
-        HLSKillAgent.__init__(self, *args, **kwargs)
-        from src.components.replay_buffer import SplitObsUniformReplayBuffer
-        # TODO: don't hardcode this for res 32x32
-        self.vis_replay_buffer = SplitObsUniformReplayBuffer({'capacity': 1e7, 'unused_obs_size': 6144,})
-
-    def add_experience(self, experience_batch): 
-        self.vis_replay_buffer.append(experience_batch)
-        super().add_experience(experience_batch)
-
-    def update(self, experience_batch=None):
-        # self.vis_replay_buffer.append(experience_batch)
-        return HLSKillAgent.update(self, experience_batch)
-
-    def visualize(self, logger, rollout_storage, step):
-        self._vis_replay_buffer(logger, step)
-        self._vis_hl_q(logger, step)
-        HLSKillAgent.visualize(self, logger, rollout_storage, step)
-
-    def _vis_replay_buffer(self, logger, step):
-        """Visualizes maze trajectories from replay buffer (if step < replay capacity)."""
-        size = self.vis_replay_buffer.size
-        states = self.vis_replay_buffer.get().observation[:size, :2]
-        plot_maze_fun(states, logger, step, size)
 
 class MazeHLInheritAgent(HLInheritAgent, MazeAgent):
     def __init__(self, *args, **kwargs):
         HLInheritAgent.__init__(self, *args, **kwargs)
-        from src.components.replay_buffer import SplitObsUniformReplayBuffer
+        from src.sampler.replay_buffer import SplitObsUniformReplayBuffer
         self.vis_replay_buffer = SplitObsUniformReplayBuffer({'capacity': 1e7, 'unused_obs_size': 6144,})
 
     def add_experience(self, experience_batch): 
