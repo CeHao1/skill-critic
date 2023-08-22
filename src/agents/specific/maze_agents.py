@@ -80,7 +80,7 @@ class MazeNoUpdateAgent(MazeAgent, SACAgent):
 class MazeACActionPriorSACAgent(ActionPriorSACAgent, MazeAgent):
     def __init__(self, *args, **kwargs):
         ActionPriorSACAgent.__init__(self, *args, **kwargs)
-        from src.sampler.replay_buffer import SplitObsUniformReplayBuffer
+        from src.samplers.replay_buffer import SplitObsUniformReplayBuffer
         # TODO: don't hardcode this for res 32x32
         self.vis_replay_buffer = SplitObsUniformReplayBuffer({'capacity': 1e7, 'unused_obs_size': 6144,})
 
@@ -112,7 +112,7 @@ class MazeACActionPriorSACAgent(ActionPriorSACAgent, MazeAgent):
 class MazeHLInheritAgent(HLInheritAgent, MazeAgent):
     def __init__(self, *args, **kwargs):
         HLInheritAgent.__init__(self, *args, **kwargs)
-        from src.sampler.replay_buffer import SplitObsUniformReplayBuffer
+        from src.samplers.replay_buffer import SplitObsUniformReplayBuffer
         self.vis_replay_buffer = SplitObsUniformReplayBuffer({'capacity': 1e7, 'unused_obs_size': 6144,})
 
     def add_experience(self, experience_batch): 

@@ -3,7 +3,7 @@ import os
 from src.utils.general_utils import AttrDict
 from src.policies.mlp_policies import MLPPolicy
 from src.policies.critic import MLPCritic
-from src.sampler.replay_buffer import UniformReplayBuffer
+from src.samplers.replay_buffer import UniformReplayBuffer
 from src.envs.wrapper.maze import ACRandMaze0S40Env
 from src.configs.default_data_configs.point_maze import data_spec
 from src.agents.specific.maze_agents import MazeSACAgent

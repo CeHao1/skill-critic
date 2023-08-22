@@ -26,7 +26,7 @@ class Loss():
         # error = self.compute(*args, **kwargs) * weights
 
         error = self.compute(*args, **kwargs) 
-        if weights is not 1:
+        if weights != 1:
             assert error.shape[-1] == len(weights)
             for idx in range(error.shape[-1]):
                 error[:,:,idx] *= weights[idx]
@@ -41,7 +41,7 @@ class Loss():
             loss.error_mat = error.detach()
 
 
-        separate_dim = weights is not 1 # more than one dim
+        separate_dim = weights != 1 # more than one dim
         if separate_dim:
             error_separate = []
             for idx in range(error.shape[-1]):

@@ -1,0 +1,6 @@
+python src/train/train_rl.py --path=src/configs/rl/point_maze/SAC --seed=0 --gpu=0 --prefix=sac
+
+python src/train/train_rl.py --path=src/configs/rl/point_maze/SAC --seed=0 --gpu=0 --prefix=sac
+
+python src/train/train_rl.py --path=src/configs/rl/point_maze/SAC --seed=0 --gpu=0 --prefix=sac
+

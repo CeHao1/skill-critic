@@ -1,0 +1,746 @@
+f9ad9de4785613b97d8e51ae7049cb3e33e3130a
+diff --git a/src/agents/specific/maze_agents.py b/src/agents/specific/maze_agents.py
+index e8e3d05..279672a 100644
+--- a/src/agents/specific/maze_agents.py
++++ b/src/agents/specific/maze_agents.py
+@@ -80,7 +80,7 @@ class MazeNoUpdateAgent(MazeAgent, SACAgent):
+ class MazeACActionPriorSACAgent(ActionPriorSACAgent, MazeAgent):
+     def __init__(self, *args, **kwargs):
+         ActionPriorSACAgent.__init__(self, *args, **kwargs)
+-        from src.sampler.replay_buffer import SplitObsUniformReplayBuffer
++        from src.samplers.replay_buffer import SplitObsUniformReplayBuffer
+         # TODO: don't hardcode this for res 32x32
+         self.vis_replay_buffer = SplitObsUniformReplayBuffer({'capacity': 1e7, 'unused_obs_size': 6144,})
+ 
+@@ -112,7 +112,7 @@ class MazeACActionPriorSACAgent(ActionPriorSACAgent, MazeAgent):
+ class MazeHLInheritAgent(HLInheritAgent, MazeAgent):
+     def __init__(self, *args, **kwargs):
+         HLInheritAgent.__init__(self, *args, **kwargs)
+-        from src.sampler.replay_buffer import SplitObsUniformReplayBuffer
++        from src.samplers.replay_buffer import SplitObsUniformReplayBuffer
+         self.vis_replay_buffer = SplitObsUniformReplayBuffer({'capacity': 1e7, 'unused_obs_size': 6144,})
+ 
+     def add_experience(self, experience_batch): 
+diff --git a/src/args/rl_param.py b/src/args/rl_param.py
+deleted file mode 100644
+index 8b7cd14..0000000
+--- a/src/args/rl_param.py
++++ /dev/null
+@@ -1,59 +0,0 @@
+-import argparse
+-
+-
+-def get_args():
+-    parser = argparse.ArgumentParser()
+-    parser.add_argument("--path", help="path to the config file directory")
+-
+-    # Folder settings
+-    parser.add_argument("--prefix", help="experiment prefix, if given creates subfolder in experiment directory")
+-    parser.add_argument('--new_dir', default=False, type=int, help='If True, concat datetime string to exp_dir.')
+-    parser.add_argument('--dont_save', default=False, type=int,
+-                        help="if True, nothing is saved to disk. Note: this doesn't work")  # TODO this doesn't work
+-
+-    # Running protocol
+-    parser.add_argument('--resume', default='', type=str, metavar='PATH',
+-                        help='path to latest checkpoint (default: none)')
+-    parser.add_argument('--mode', default='train', type=str,
+-                        choices=['train', 'val', 'rollout', 'offline'],
+-                        help='mode of the program (training, validation, or generate rollout)')
+-    parser.add_argument('--ip_address', default='192.168.1.100', type=str,
+-                        help='ip adress of ps4')
+-
+-    # Misc
+-    parser.add_argument('--seed', default=-1, type=int,
+-                        help='overrides config/default seed for more convenient seed setting.')
+-    parser.add_argument('--gpu', default=-1, type=int,
+-                        help='will set CUDA_VISIBLE_DEVICES to selected value')
+-    parser.add_argument('--strict_weight_loading', default=True, type=int,
+-                        help='if True, uses strict weight loading function')
+-    parser.add_argument('--resume_load_replay_buffer', default=True, type=int, 
+-                        help='if True, loads replay buffer from checkpoint')
+-    parser.add_argument('--resume_warm_start', default=True, type=int,
+-                        help='if True, resumes warm start from checkpoint')
+-    parser.add_argument('--deterministic', default=False, type=int,
+-                        help='if True, sets fixed seeds for torch and numpy')
+-    parser.add_argument('--deterministic_action', action='store_true',
+-                        help='if True, use deterministic action without variance')
+-    parser.add_argument('--n_val_samples', default=10, type=int,
+-                        help='number of validation episodes')
+-    parser.add_argument('--save_dir', type=str,
+-                        help='directory for saving the generated rollouts in rollout mode')
+-    parser.add_argument('--counter', default=0, type=int,
+-                        help='start count of save rollout')
+-    parser.add_argument('--config_override', default='', type=str,
+-                        help='override to config file in format "key1.key2=val1,key3=val2"')
+-
+-    # Debug
+-    parser.add_argument('--debug', default=False, type=int,
+-                        help='if True, runs in debug mode')
+-
+-    # Note
+-    parser.add_argument('--notes', default='', type=str,
+-                        help='Notes for the run')
+-    
+-    # tuning
+-    # parser.add_argument('--LLVar', default=0, type=float)
+-    # parser.add_argument('--LLtd', default=0, type=float)
+-
+-    return parser.parse_args()
+diff --git a/src/args/skill_param.py b/src/args/skill_param.py
+deleted file mode 100644
+index 47381af..0000000
+--- a/src/args/skill_param.py
++++ /dev/null
+@@ -1,56 +0,0 @@
+-import argparse
+-
+-
+-def get_args():
+-    parser = argparse.ArgumentParser()
+-    parser.add_argument("--path", help="path to the config file directory")
+-
+-    # Folder settings
+-    parser.add_argument("--prefix", help="experiment prefix, if given creates subfolder in experiment directory")
+-    parser.add_argument('--new_dir', default=False, type=int, help='If True, concat datetime string to exp_dir.')
+-    parser.add_argument('--dont_save', default=False, type=int,
+-                        help="if True, nothing is saved to disk. Note: this doesn't work")  # TODO this doesn't work
+-
+-    # Running protocol
+-    parser.add_argument('--resume', default='', type=str, metavar='PATH',
+-                        help='path to latest checkpoint (default: none)')
+-    parser.add_argument('--train', default=True, type=int,
+-                        help='if False, will run one validation epoch')
+-    parser.add_argument('--test_prediction', default=True, type=int,
+-                        help="if False, prediction isn't run at validation time")
+-    parser.add_argument('--skip_first_val', default=False, type=int,
+-                        help='if True, will skip the first validation epoch')
+-    parser.add_argument('--val_sweep', default=False, type=int,
+-                        help='if True, runs validation on all existing model checkpoints')
+-
+-    # Misc
+-    parser.add_argument('--gpu', default=-1, type=int,
+-                        help='will set CUDA_VISIBLE_DEVICES to selected value')
+-    parser.add_argument('--strict_weight_loading', default=True, type=int,
+-                        help='if True, uses strict weight loading function')
+-    parser.add_argument('--deterministic', default=False, type=int,
+-                        help='if True, sets fixed seeds for torch and numpy')
+-    parser.add_argument('--log_interval', default=500, type=int,
+-                        help='number of updates per training log')
+-    parser.add_argument('--per_epoch_img_logs', default=1, type=int,
+-                        help='number of image loggings per epoch')
+-    parser.add_argument('--val_data_size', default=-1, type=int,
+-                        help='number of sequences in the validation set. If -1, the full dataset is used')
+-    parser.add_argument('--val_interval', default=5, type=int,
+-                        help='number of epochs per validation')
+-
+-    # Debug
+-    parser.add_argument('--detect_anomaly', default=False, type=int,
+-                        help='if True, uses autograd.detect_anomaly()')
+-    parser.add_argument('--feed_random_data', default=False, type=int,
+-                        help='if True, we feed random data to the model to test its performance')
+-    parser.add_argument('--train_loop_pdb', default=False, type=int,
+-                        help='if True, opens a pdb into training loop')
+-    parser.add_argument('--debug', default=False, type=int,
+-                        help='if True, runs in debug mode')
+-
+-    # add kl_div_weight
+-    parser.add_argument('--save2mp4', default=False, type=bool,
+-                        help='if set, videos will be saved locally')
+-
+-    return parser.parse_args()
+diff --git a/src/configs/rl/point_maze/base_conf.py b/src/configs/rl/point_maze/base_conf.py
+index 8d9511a..b96806b 100644
+--- a/src/configs/rl/point_maze/base_conf.py
++++ b/src/configs/rl/point_maze/base_conf.py
+@@ -3,7 +3,7 @@ import os
+ from src.utils.general_utils import AttrDict
+ from src.policies.mlp_policies import MLPPolicy
+ from src.policies.critic import MLPCritic
+-from src.sampler.replay_buffer import UniformReplayBuffer
++from src.samplers.replay_buffer import UniformReplayBuffer
+ from src.envs.wrapper.maze import ACRandMaze0S40Env
+ from src.configs.default_data_configs.point_maze import data_spec
+ from src.agents.specific.maze_agents import MazeSACAgent
+diff --git a/src/modules/losses.py b/src/modules/losses.py
+index 0f005f0..7911565 100644
+--- a/src/modules/losses.py
++++ b/src/modules/losses.py
+@@ -26,7 +26,7 @@ class Loss():
+         # error = self.compute(*args, **kwargs) * weights
+ 
+         error = self.compute(*args, **kwargs) 
+-        if weights is not 1:
++        if weights != 1:
+             assert error.shape[-1] == len(weights)
+             for idx in range(error.shape[-1]):
+                 error[:,:,idx] *= weights[idx]
+@@ -41,7 +41,7 @@ class Loss():
+             loss.error_mat = error.detach()
+ 
+ 
+-        separate_dim = weights is not 1 # more than one dim
++        separate_dim = weights != 1 # more than one dim
+         if separate_dim:
+             error_separate = []
+             for idx in range(error.shape[-1]):
+diff --git a/src/sampler/replay_buffer.py b/src/sampler/replay_buffer.py
+deleted file mode 100644
+index d429f62..0000000
+--- a/src/sampler/replay_buffer.py
++++ /dev/null
+@@ -1,194 +0,0 @@
+-import numpy as np
+-import gzip
+-import pickle
+-import os
+-import copy
+-
+-from src.utils.general_utils import RecursiveAverageMeter
+-from src.utils.py_utils import AttrDict, ParamDict
+-
+-class ReplayBuffer:
+-    """Stores arbitrary rollout outputs that are provided by AttrDicts."""
+-    def __init__(self, hp):
+-        # TODO upgrade to more efficient (vectorized) implementation of rollout storage
+-        self._hp = self._default_hparams().overwrite(hp)
+-        self._max_capacity = self._hp.capacity
+-        self._replay_buffer = None
+-        self._idx = None
+-        self._size = None       # indicates whether all slots in replay buffer were filled at least once
+-
+-    def _default_hparams(self):
+-        default_dict = ParamDict({
+-            'capacity': 1e6,        # max number of experience samples
+-            'dump_replay': True,    # whether replay buffer gets dump upon checkpointing
+-        })
+-        return default_dict
+-
+-    def append(self, experience_batch):
+-        """Appends the vals in the AttrDict experience_batch to the existing replay buffer."""
+-        if self._replay_buffer is None:
+-            self._init(experience_batch)
+-
+-        # compute indexing range
+-        n_samples = self._get_n_samples(experience_batch)
+-        idxs = np.asarray(np.arange(self._idx, self._idx + n_samples) % self._max_capacity, dtype=int)
+-
+-        # add batch
+-        for key in self._replay_buffer:
+-            self._replay_buffer[key][idxs] = np.stack(experience_batch[key])
+-
+-        # advance pointer
+-        self._idx = int((self._idx + n_samples) % self._max_capacity)
+-        self._size = int(min(self._size + n_samples, self._max_capacity))
+-
+-    def sample(self, n_samples, filter=None):
+-        """Samples n_samples from the rollout_storage. Potentially can filter which fields to return."""
+-        raise NotImplementedError("Needs to be implemented by child class!")
+-
+-    def get(self):
+-        """Returns complete replay buffer."""
+-        return self._replay_buffer
+-
+-    def reset(self):
+-        """Deletes all entries from replay buffer and reinitializes."""
+-        del self._replay_buffer
+-        self._replay_buffer, self._idx, self._size = None, None, None
+-
+-    def _init(self, example_batch):
+-        """Initializes the replay buffer fields given an example experience batch."""
+-        self._replay_buffer = AttrDict()
+-        for key in example_batch:
+-            example_element = example_batch[key][0]
+-            self._replay_buffer[key] = np.empty([int(self._max_capacity)] + list(example_element.shape),
+-                                                   dtype=example_element.dtype)
+-        self._idx = 0
+-        self._size = 0
+-
+-    def save(self, save_dir):
+-        """Stores compressed replay buffer to file."""
+-        if not self._hp.dump_replay: return
+-        os.makedirs(save_dir, exist_ok=True)
+-        with gzip.open(os.path.join(save_dir, "replay_buffer.zip"), 'wb') as f:
+-            pickle.dump(self._replay_buffer, f)
+-        np.save(os.path.join(save_dir, "idx_size.npy"), np.array([self._idx, self.size]))
+-
+-    def load(self, save_dir):
+-        """Loads replay buffer from compressed disk file."""
+-        assert self._replay_buffer is None      # cannot overwrite existing replay buffer when loading
+-        if not self._hp.dump_replay:
+-            return
+-        with gzip.open(os.path.join(save_dir, "replay_buffer.zip"), 'rb') as f:
+-            self._replay_buffer = pickle.load(f)
+-        idx_size = np.load(os.path.join(save_dir, "idx_size.npy"))
+-        self._idx, self._size = int(idx_size[0]), int(idx_size[1])
+-
+-    @staticmethod
+-    def _get_n_samples(batch):
+-        """Retrieves the number of samples in batch."""
+-        for key in batch:
+-            return len(batch[key])
+-
+-    @property
+-    def size(self):
+-        return self._size
+-
+-    @property
+-    def capacity(self):
+-        return self._max_capacity
+-
+-    def __contains__(self, key):
+-        return key in self._replay_buffer
+-
+-
+-class UniformReplayBuffer(ReplayBuffer):
+-    """Samples batch uniformly from all experience samples in the buffer."""
+-    def sample(self, n_samples, filter=None):
+-        assert n_samples <= self.size      # need enough samples in replay buffer
+-        assert isinstance(self.size, int)   # need integer-valued size
+-        idxs = np.random.choice(np.arange(self.size), size=n_samples)
+-
+-        sampled_transitions = AttrDict()
+-        for key in self._replay_buffer:
+-            if filter is None or key in filter:
+-                sampled_transitions[key] = self._replay_buffer[key][idxs]
+-        return sampled_transitions
+-
+-
+-class FilteredReplayBuffer(ReplayBuffer):
+-    """Has option to *not* store certain attributes in replay (eg to save memory by not storing images."""
+-    def _default_hparams(self):
+-        default_dict = ParamDict({
+-            'filter_keys': [],        # list of keys who's values should not get stored in replay
+-        })
+-        return default_dict
+-
+-    def append(self, experience_batch):
+-        return super().append(AttrDict({k: v for (k,v) in experience_batch.items() if k not in self._hp.filter_keys}))
+-
+-
+-class FilteredUniormReplayBuffer(FilteredReplayBuffer, UniformReplayBuffer):
+-    def sample(self, n_samples, filter=None):
+-        return UniformReplayBuffer.sample(self, n_samples, filter)
+-
+-
+-class SplitObsReplayBuffer(ReplayBuffer):
+-    """Splits off unused part of observation before storing (eg to save memory by not storing images)."""
+-    def _default_hparams(self):
+-        default_dict = ParamDict({
+-            'unused_obs_size': None,    # dimensionality of split off observation part
+-            'discard_part': 'back',     # which part of observation to discard ['front', 'back']
+-        })
+-        return super()._default_hparams().overwrite(default_dict)
+-
+-    def append(self, experience_batch):
+-        filtered_experience_batch = copy.deepcopy(experience_batch)
+-        if self._hp.discard_part == 'front':
+-            filtered_experience_batch.observation = [o[self._hp.unused_obs_size:] for o in filtered_experience_batch.observation]
+-            filtered_experience_batch.observation_next = [o[self._hp.unused_obs_size:] for o in filtered_experience_batch.observation_next]
+-        elif self._hp.discard_part == 'back':
+-            filtered_experience_batch.observation = [o[:-self._hp.unused_obs_size] for o in filtered_experience_batch.observation]
+-            filtered_experience_batch.observation_next = [o[:-self._hp.unused_obs_size] for o in filtered_experience_batch.observation_next]
+-        else:
+-            raise ValueError("Cannot parse discard_part parameter {}!".format(self._hp.discard_part))
+-        return super().append(filtered_experience_batch)
+-
+-
+-class SplitObsUniformReplayBuffer(SplitObsReplayBuffer, UniformReplayBuffer):
+-    def sample(self, n_samples, filter=None):
+-        return UniformReplayBuffer.sample(self, n_samples, filter)
+-
+-
+-class RolloutStorage:
+-    """Can hold multiple rollouts, can compute statistics over these rollouts."""
+-    def __init__(self):
+-        self.rollouts = []
+-
+-    def append(self, rollout):
+-        """Adds rollout to storage."""
+-        self.rollouts.append(rollout)
+-
+-    def rollout_stats(self):
+-        """Returns AttrDict of average statistics over the rollouts."""
+-        assert self.rollouts    # rollout storage should not be empty
+-        stats = RecursiveAverageMeter()
+-        for rollout in self.rollouts:
+-            stats.update(AttrDict(
+-                avg_reward=np.stack(rollout.reward).sum()
+-            ))
+-        return stats.avg
+-
+-    def reset(self):
+-        del self.rollouts
+-        self.rollouts = []
+-
+-    def get(self):
+-        return self.rollouts
+-
+-    def __contains__(self, key):
+-        return self.rollouts and key in self.rollouts[0]
+-
+-
+-
+-
+-
+-
+diff --git a/src/sampler/rollout_utils.py b/src/sampler/rollout_utils.py
+deleted file mode 100644
+index c8ac0a4..0000000
+--- a/src/sampler/rollout_utils.py
++++ /dev/null
+@@ -1,56 +0,0 @@
+-import os
+-import cv2
+-import h5py
+-import numpy as np
+-
+-
+-class RolloutSaver(object):
+-    """Saves rollout episodes to a target directory."""
+-    def __init__(self, save_dir):
+-        if not os.path.exists(save_dir):
+-            os.makedirs(save_dir)
+-        self.save_dir = save_dir
+-        self.counter = 0
+-
+-    def save_rollout_to_file(self, episode):
+-        """Saves an episode to the next file index of the target folder."""
+-        # get save path
+-        save_path = os.path.join(self.save_dir, "rollout_{}.h5".format(self.counter))
+-
+-        # save rollout to file
+-        f = h5py.File(save_path, "w")
+-        f.create_dataset("traj_per_file", data=1)
+-
+-        # store trajectory info in traj0 group
+-        traj_data = f.create_group("traj0")
+-        traj_data.create_dataset("states", data=np.array(episode.observation))
+-        traj_data.create_dataset("images", data=np.array(episode.image, dtype=np.uint8))
+-        traj_data.create_dataset("actions", data=np.array(episode.action))
+-
+-        terminals = np.array(episode.done)
+-        if np.sum(terminals) == 0:
+-            terminals[-1] = True
+-
+-        # build pad-mask that indicates how long sequence is
+-        is_terminal_idxs = np.nonzero(terminals)[0]
+-        pad_mask = np.zeros((len(terminals),))
+-        pad_mask[:is_terminal_idxs[0]] = 1.
+-        traj_data.create_dataset("pad_mask", data=pad_mask)
+-
+-        f.close()
+-
+-        self.counter += 1
+-
+-    def _resize_video(self, images, dim=64):
+-        """Resize a video in numpy array form to target dimension."""
+-        ret = np.zeros((images.shape[0], dim, dim, 3))
+-
+-        for i in range(images.shape[0]):
+-            ret[i] = cv2.resize(images[i], dsize=(dim, dim),
+-                                interpolation=cv2.INTER_CUBIC)
+-
+-        return ret.astype(np.uint8)
+-
+-    def reset(self):
+-        """Resets counter."""
+-        self.counter = 0
+diff --git a/src/sampler/sampler.py b/src/sampler/sampler.py
+deleted file mode 100644
+index f837118..0000000
+--- a/src/sampler/sampler.py
++++ /dev/null
+@@ -1,279 +0,0 @@
+-import numpy as np
+-import contextlib
+-from collections import deque
+-
+-from src.utils.general_utils import listdict2dictlist, obj2np
+-from src.utils.py_utils import AttrDict, ParamDict
+-from src.modules.variational_inference import MultivariateGaussian
+-
+-
+-class Sampler:
+-    """Collects rollouts from the environment using the given agent."""
+-    def __init__(self, config, env, agent, logger, max_episode_len):
+-        self._hp = self._default_hparams().overwrite(config)
+-
+-        self._env = env
+-        self._agent = agent
+-        self._logger = logger
+-        self._max_episode_len = max_episode_len
+-
+-        self._obs = None
+-        self._episode_step, self._episode_reward = 0, 0
+-
+-    def _default_hparams(self):
+-        return ParamDict({})
+-
+-    def init(self, is_train):
+-        """Starts a new rollout. Render indicates whether output should contain image."""
+-        with self._env.val_mode() if not is_train else contextlib.suppress():
+-            with self._agent.val_mode() if not is_train else contextlib.suppress():
+-                self._episode_reset()
+-
+-    def sample_action(self, obs):
+-        return self._agent.act(obs)
+-
+-    def sample_batch(self, batch_size, is_train=True, global_step=None):
+-        """Samples an experience batch of the required size."""
+-        experience_batch = []
+-        step = 0
+-        with self._env.val_mode() if not is_train else contextlib.suppress():
+-            with self._agent.val_mode() if not is_train else contextlib.suppress():
+-                with self._agent.rollout_mode():
+-                    while step < batch_size:
+-                        # perform one rollout step
+-                        agent_output = self.sample_action(self._obs)
+-                        if agent_output.action is None:
+-                            self._episode_reset(global_step)
+-                            continue
+-                        agent_output = self._postprocess_agent_output(agent_output)
+-                        obs, reward, done, info = self._env.step(agent_output.action)
+-                        obs = self._postprocess_obs(obs)
+-                        experience_batch.append(AttrDict(
+-                            observation=self._obs,
+-                            reward=reward,
+-                            done=done,
+-                            action=agent_output.action,
+-                            observation_next=obs,
+-                        ))
+-
+-                        # update stored observation
+-                        self._obs = obs
+-                        step += 1; self._episode_step += 1; self._episode_reward += reward
+-
+-                        # reset if episode ends
+-                        if done or self._episode_step >= self._max_episode_len:
+-                            if not done:    # force done to be True for timeout
+-                                experience_batch[-1].done = True
+-                            self._episode_reset(global_step)
+-
+-        return listdict2dictlist(experience_batch), step
+-
+-    def sample_episode(self, is_train, render=False, deterministic_action=False):
+-        """Samples one episode from the environment."""
+-        self.init(is_train)
+-        episode, done = [], False
+-        with self._env.val_mode() if not is_train else contextlib.suppress():
+-            with self._agent.val_mode() if not is_train else contextlib.suppress():
+-                with self._agent.rollout_mode():
+-                    while not done and self._episode_step < self._max_episode_len:
+-                        # perform one rollout step
+-                        agent_output = self.sample_action(self._obs)
+-                        if agent_output.action is None:
+-                            break
+-                        agent_output = self._postprocess_agent_output(agent_output, deterministic_action=deterministic_action)
+-                        if render:
+-                            render_obs = self._env.render()
+-                        obs, reward, done, info = self._env.step(agent_output.action)
+-                        obs = self._postprocess_obs(obs)
+-                        episode.append(AttrDict(
+-                            observation=self._obs,
+-                            reward=reward,
+-                            done=done,
+-                            action=agent_output.action,
+-                            observation_next=obs,
+-                            info=obj2np(info),
+-                        ))
+-                        if render:
+-                            episode[-1].update(AttrDict(image=render_obs))
+-
+-                        # update stored observation
+-                        self._obs = obs
+-                        self._episode_step += 1
+-        episode[-1].done = True     # make sure episode is marked as done at final time step
+-
+-        return listdict2dictlist(episode)
+-
+-    def get_episode_info(self):
+-        episode_info = AttrDict(episode_reward=self._episode_reward,
+-                                episode_length=self._episode_step,
+-                                episode_success=np.clip(self._episode_reward, 0, 1))
+-        if hasattr(self._env, "get_episode_info"):
+-            episode_info.update(self._env.get_episode_info())
+-        return episode_info
+-
+-    def _episode_reset(self, global_step=None):
+-        """Resets sampler at the end of an episode."""
+-        if global_step is not None and self._logger is not None:    # logger is none in non-master threads
+-            self._logger.log_scalar_dict(self.get_episode_info(),
+-                                         prefix='train' if self._agent._is_train else 'val',
+-                                         step=global_step)
+-        self._episode_step, self._episode_reward = 0, 0.
+-        self._obs = self._postprocess_obs(self._reset_env())
+-        self._agent.reset()
+-
+-    def _reset_env(self):
+-        return self._env.reset()
+-
+-    def _postprocess_obs(self, obs):
+-        """Optionally post-process observation."""
+-        return obs
+-
+-    def _postprocess_agent_output(self, agent_output, deterministic_action=False):
+-        """Optionally post-process / store agent output."""
+-        if deterministic_action:
+-            if isinstance(agent_output.dist, MultivariateGaussian):
+-                agent_output.ori_action = agent_output.action
+-                agent_output.action = agent_output.dist.mean[0]
+-        return agent_output
+-
+-
+-class HierarchicalSampler(Sampler):
+-    """Collects experience batches by rolling out a hierarchical agent. Aggregates low-level batches into HL batch."""
+-    def __init__(self, *args, **kwargs):
+-        super().__init__(*args, **kwargs)
+-        self.last_hl_obs, self.last_hl_action = None, None  # stores observation when last hl action was taken
+-        self.reward_since_last_hl = 0  # accumulates the reward since the last HL step for HL transition
+-
+-    def sample_batch(self, batch_size, is_train=True, global_step=None, store_ll=True):
+-        """Samples the required number of high-level transitions. Number of LL transitions can be higher."""
+-        hl_experience_batch, ll_experience_batch = [], []
+-
+-        env_steps, hl_step = 0, 0
+-        self.last_hl_obs = self._obs
+-        with self._env.val_mode() if not is_train else contextlib.suppress():
+-            with self._agent.val_mode() if not is_train else contextlib.suppress():
+-                with self._agent.rollout_mode():
+-                    while hl_step < batch_size or len(ll_experience_batch) <= 1:
+-                        # perform one rollout step
+-                        agent_output = self.sample_action(self._obs)
+-                        agent_output = self._postprocess_agent_output(agent_output)
+-                        obs, reward, done, info = self._env.step(agent_output.action)
+-                        obs = self._postprocess_obs(obs)
+-
+-                        # update last step's 'observation_next' with HL action
+-                        if store_ll:
+-                            if ll_experience_batch:
+-                                ll_experience_batch[-1].observation_next = \
+-                                    self._agent.make_ll_obs(ll_experience_batch[-1].observation_next, agent_output.hl_action)
+-
+-                            # store current step in ll_experience_batch
+-                            ll_experience_batch.append(AttrDict(
+-                                observation=self._agent.make_ll_obs(self._obs, agent_output.hl_action),
+-                                reward=reward,
+-                                done=done,
+-                                action=agent_output.action,
+-                                observation_next=obs,       # this will get updated in the next step
+-                            ))
+-
+-                        # store HL experience batch if this was HL action or episode is done
+-                        if agent_output.is_hl_step or (done or self._episode_step >= self._max_episode_len-1):
+-                            if self.last_hl_obs is not None and self.last_hl_action is not None:
+-                                hl_experience_batch.append(AttrDict(
+-                                    observation=self.last_hl_obs,
+-                                    reward=self.reward_since_last_hl,
+-                                    done=done,
+-                                    action=self.last_hl_action,
+-                                    observation_next=obs,
+-                                ))
+-                                hl_step += 1
+-                                if done:
+-                                    hl_experience_batch[-1].reward += reward  # add terminal reward
+-                                if hl_step % 1000 == 0:
+-                                    print("Sample step {}".format(hl_step))
+-                            self.last_hl_obs = self._obs if self._episode_step == 0 else obs
+-                            self.last_hl_action = agent_output.hl_action
+-                            self.reward_since_last_hl = 0
+-
+-                        # update stored observation
+-                        self._obs = obs
+-                        env_steps += 1; self._episode_step += 1; self._episode_reward += reward
+-                        self.reward_since_last_hl += reward
+-
+-                        # reset if episode ends
+-                        if done or self._episode_step >= self._max_episode_len:
+-                            if not done:    # force done to be True for timeout
+-                                ll_experience_batch[-1].done = True
+-                                if hl_experience_batch:   # can potentially be empty 
+-                                    hl_experience_batch[-1].done = True
+-                            self._episode_reset(global_step)
+-
+-
+-        return AttrDict(
+-            hl_batch=listdict2dictlist(hl_experience_batch),
+-            ll_batch=listdict2dictlist(ll_experience_batch[:-1]),   # last element does not have updated obs_next!
+-        ), env_steps
+-
+-    def _episode_reset(self, global_step=None):
+-        super()._episode_reset(global_step)
+-        self.last_hl_obs, self.last_hl_action = None, None
+-        self.reward_since_last_hl = 0
+-
+-
+-class ImageAugmentedSampler(Sampler):
+-    """Appends image rendering to raw observation."""
+-    def _postprocess_obs(self, obs):
+-        img = self._env.render().transpose(2, 0, 1) * 2. - 1.0
+-        return np.concatenate((obs, img.flatten()))
+-
+-
+-class MultiImageAugmentedSampler(Sampler):
+-    """Appends multiple past images to current observation."""
+-    def _episode_reset(self, global_step=None):
+-        self._past_frames = deque(maxlen=self._hp.n_frames)     # build ring-buffer of past images
+-        super()._episode_reset(global_step)
+-
+-    def _postprocess_obs(self, obs):
+-        img = self._env.render().transpose(2, 0, 1) * 2. - 1.0
+-        if not self._past_frames:   # initialize past frames with N copies of current frame
+-            [self._past_frames.append(img) for _ in range(self._hp.n_frames - 1)]
+-        self._past_frames.append(img)
+-        stacked_img = np.concatenate(list(self._past_frames), axis=0)
+-        return np.concatenate((obs, stacked_img.flatten()))
+-
+-
+-class ACImageAugmentedSampler(ImageAugmentedSampler):
+-    """Adds no-op renders to make sure agent-centric camera reaches agent."""
+-    def _reset_env(self):
+-        obs = super()._reset_env()
+-        for _ in range(100):  # so that camera can "reach" agent
+-            self._env.render(mode='rgb_array')
+-        return obs
+-
+-
+-class ACMultiImageAugmentedSampler(MultiImageAugmentedSampler, ACImageAugmentedSampler):
+-    def _reset_env(self):
+-        return ACImageAugmentedSampler._reset_env(self)
+-
+-
+-class ImageAugmentedHierarchicalSampler(HierarchicalSampler, ImageAugmentedSampler):
+-    def _postprocess_obs(self, *args, **kwargs):
+-        return ImageAugmentedSampler._postprocess_obs(self, *args, **kwargs)
+-
+-
+-class MultiImageAugmentedHierarchicalSampler(HierarchicalSampler, MultiImageAugmentedSampler):
+-    def _postprocess_obs(self, *args, **kwargs):
+-        return MultiImageAugmentedSampler._postprocess_obs(self, *args, **kwargs)
+-
+-    def _episode_reset(self, *args, **kwargs):
+-        return MultiImageAugmentedSampler._episode_reset(self, *args, **kwargs)
+-
+-
+-class ACImageAugmentedHierarchicalSampler(ImageAugmentedHierarchicalSampler, ACImageAugmentedSampler):
+-    def _reset_env(self):
+-        return ACImageAugmentedSampler._reset_env(self)
+-
+-
+-class ACMultiImageAugmentedHierarchicalSampler(MultiImageAugmentedHierarchicalSampler,
+-                                               ACImageAugmentedHierarchicalSampler):
+-    def _reset_env(self):
+-        return ACImageAugmentedHierarchicalSampler._reset_env(self)
+diff --git a/src/scripts/example.sh b/src/scripts/example.sh
+index d55f68d..ffdbe61 100644
+--- a/src/scripts/example.sh
++++ b/src/scripts/example.sh
+@@ -1 +1,9 @@
+ python main.py --prefix "hello" --path "src/configs/example" --cpu_workers 4
++
++
++export EXP_DIR=./experiments
++export DATA_DIR=./data
++
++
++python3 src/train/train_rl.py --path=src/configs/rl/point_maze/SAC --seed=0 --gpu=0 --prefix=sac  
++

@@ -1,0 +1,147 @@
+wandb_version: 1
+
+exp_dir:
+  desc: null
+  value: ./experiments
+conf_path:
+  desc: null
+  value: src/configs/rl/point_maze/SAC/conf.py
+general_seed:
+  desc: null
+  value: 42
+general_data_dir:
+  desc: null
+  value: .
+general_num_epochs:
+  desc: null
+  value: 100
+general_max_rollout_len:
+  desc: null
+  value: 2000
+general_n_steps_per_epoch:
+  desc: null
+  value: 100000
+general_n_warmup_steps:
+  desc: null
+  value: 5000.0
+agent_policy_params_action_dim:
+  desc: null
+  value: 2
+agent_policy_params_input_dim:
+  desc: null
+  value: 4
+agent_policy_params_n_layers:
+  desc: null
+  value: 2
+agent_policy_params_nz_mid:
+  desc: null
+  value: 256
+agent_policy_params_max_action_range:
+  desc: null
+  value: 1.0
+agent_critic_params_action_dim:
+  desc: null
+  value: 2
+agent_critic_params_input_dim:
+  desc: null
+  value: 4
+agent_critic_params_output_dim:
+  desc: null
+  value: 1
+agent_critic_params_n_layers:
+  desc: null
+  value: 2
+agent_critic_params_nz_mid:
+  desc: null
+  value: 256
+agent_critic_params_action_input:
+  desc: null
+  value: true
+agent_replay_params_capacity:
+  desc: null
+  value: 1000000.0
+agent_replay_params_dump_replay:
+  desc: null
+  value: false
+agent_clip_q_target:
+  desc: null
+  value: false
+agent_batch_size:
+  desc: null
+  value: 256
+agent_log_videos:
+  desc: null
+  value: false
+agent_device:
+  desc: null
+  value: cuda
+data_dataset_spec_n_actions:
+  desc: null
+  value: 2
+data_dataset_spec_state_dim:
+  desc: null
+  value: 4
+data_dataset_spec_split_train:
+  desc: null
+  value: 0.9
+data_dataset_spec_split_val:
+  desc: null
+  value: 0.1
+data_dataset_spec_split_test:
+  desc: null
+  value: 0.0
+data_dataset_spec_res:
+  desc: null
+  value: 32
+data_dataset_spec_crop_rand_subseq:
+  desc: null
+  value: true
+data_dataset_spec_max_seq_len:
+  desc: null
+  value: 300
+env_reward_norm:
+  desc: null
+  value: 1.0
+env_device:
+  desc: null
+  value: cuda
+ckpt_path:
+  desc: null
+  value: null
+notes:
+  desc: null
+  value: non-hierarchical RL experiments in point maze env
+mpi_rank:
+  desc: null
+  value: 0
+mpi_is_chef:
+  desc: null
+  value: true
+mpi_num_workers:
+  desc: null
+  value: 1
+_wandb:
+  desc: null
+  value:
+    python_version: 3.8.0
+    cli_version: 0.15.8
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1692687425.163999
+    t:
+      1:
+      - 1
+      - 41
+      - 55
+      2:
+      - 1
+      - 41
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.8.0
+      5: 0.15.8
+      8:
+      - 5

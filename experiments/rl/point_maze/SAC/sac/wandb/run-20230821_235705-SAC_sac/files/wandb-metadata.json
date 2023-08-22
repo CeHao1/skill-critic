@@ -1,0 +1,170 @@
+{
+    "os": "Linux-5.15.0-78-generic-x86_64-with-glibc2.10",
+    "python": "3.8.0",
+    "heartbeatAt": "2023-08-22T06:57:05.733337",
+    "startedAt": "2023-08-22T06:57:05.155780",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--path=src/configs/rl/point_maze/SAC",
+        "--seed=0",
+        "--gpu=0",
+        "--prefix=sac"
+    ],
+    "state": "running",
+    "program": "src/train/train_rl.py",
+    "codePath": "src/train/train_rl.py",
+    "git": {
+        "remote": "https://github.com/CeHao1/skill-critic.git",
+        "commit": "f9ad9de4785613b97d8e51ae7049cb3e33e3130a"
+    },
+    "email": "cehao@outlook.com",
+    "root": "/home/msc/cehao/github_space/skill-critic",
+    "host": "msc-Alienware-Aurora-R13",
+    "username": "msc",
+    "executable": "/home/msc/anaconda3/envs/sc2/bin/python3",
+    "cpu_count": 16,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 2317.720333333333,
+        "min": 800.0,
+        "max": 2200.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2381.524,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2363.608,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 1924.891,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 2400.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 1800.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 1800.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 1800.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 1800.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 1800.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 1800.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 1800.0
+        },
+        {
+            "current": 2400.0,
+            "min": 800.0,
+            "max": 1800.0
+        }
+    ],
+    "disk": {
+        "total": 937.3305015563965,
+        "used": 623.6122360229492
+    },
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3090",
+            "memory_total": 25438322688
+        }
+    ],
+    "memory": {
+        "total": 62.584869384765625
+    }
+}
