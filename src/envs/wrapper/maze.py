@@ -45,9 +45,8 @@ class ACRandMaze0S40Env(MazeEnv):
 
 
 class ACmMaze1(MazeEnv):  
-    # v7
-    # TARGET_POS = np.array([13, 9]) # right mid
     TARGET_POS = np.array([9, 13]) # good and selected, top mid
+    # TARGET_POS = np.array([13, 9]) # right mid
     # TARGET_POS = np.array([9, 10]) # center
     # TARGET_POS = np.array([1, 17]) # top left
     
@@ -64,8 +63,8 @@ class ACmMaze1(MazeEnv):
 
 class ACmMaze2(MazeEnv):  
     # 
-    # TARGET_POS = np.array([3, 10]) # selected
-    TARGET_POS = np.array([5, 1]) # 
+    TARGET_POS = np.array([3, 10]) # selected
+    # TARGET_POS = np.array([5, 1]) # 
     
     START_POS = np.array([1,1]) #
     VIS_RANGE = [[-1, 19], [-1, 18]]
