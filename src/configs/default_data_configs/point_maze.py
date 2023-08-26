@@ -1,5 +1,5 @@
 from src.utils.general_utils import AttrDict
-from src.data.data_loader import GlobalSplitVideoDataset
+from src.demo.data_loader import GlobalSplitVideoDataset
 
 
 data_spec = AttrDict(

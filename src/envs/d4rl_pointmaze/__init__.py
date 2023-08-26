@@ -53,17 +53,3 @@ register(
     }
 )
 
-register(
-    id='maze2d-mMaze3-v0',
-    entry_point='src.envs.d4rl_pointmaze:MazeEnv',
-    max_episode_steps=800,
-    kwargs={
-        'maze_spec': maze_name_space['m_maze3'],
-        'agent_centric_view': True,
-        'reward_type': 'sparse',
-        'reset_target': False,
-        'ref_min_score': 4.83,
-        'ref_max_score': 191.99,
-        'dataset_url':'http://maze2d-hardexpv2-sparse.hdf5'
-    }
-)

@@ -12,7 +12,7 @@ from torch import autograd
 from torch.optim import Adam, RMSprop, SGD
 from functools import partial
 
-from src.data.data_loader import RandomVideoDataset
+from src.demo.data_loader import RandomVideoDataset
 from src.utils.general_utils import RecursiveAverageMeter, map_dict
 from src.utils.checkpoint_utils import CheckpointHandler, save_cmd, save_git, get_config_path
 from src.utils.general_utils import dummy_context, AttrDict, get_clipped_optimizer, \

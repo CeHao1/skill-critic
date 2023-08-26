@@ -2,7 +2,7 @@
 import gym
 import numpy as np
 
-from src.data.data_loader import Dataset
+from src.demo.data_loader import Dataset
 from src.utils.py_utils import AttrDict
 from src.utils.video_utils import resize_video
 

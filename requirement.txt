@@ -20,5 +20,6 @@ mujoco_py
 
 scikit-learn
 seaborn
+sk-video
 
 # how to install: pip install -r requirement.txt

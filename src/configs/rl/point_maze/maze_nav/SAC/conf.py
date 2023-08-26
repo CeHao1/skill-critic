@@ -1,0 +1,1 @@
+from src.configs.rl.point_maze.maze_nav.base_conf import *
