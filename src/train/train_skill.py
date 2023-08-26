@@ -23,8 +23,11 @@ from src.components.trainer_base import BaseTrainer
 from src.utils.wandb import WandBLogger
 from src.args.params_skill import get_args
 
-WANDB_PROJECT_NAME = 'your_project_name'
-WANDB_ENTITY_NAME = 'your_entity_name'
+# WANDB_PROJECT_NAME = 'your_project_name'
+# WANDB_ENTITY_NAME = 'your_entity_name'
+
+WANDB_PROJECT_NAME = 'testskill'
+WANDB_ENTITY_NAME = 'cehao'
 
 
 class ModelTrainer(BaseTrainer):
