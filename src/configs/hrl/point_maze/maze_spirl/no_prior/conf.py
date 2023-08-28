@@ -1,0 +1,1 @@
+from src.configs.hrl.point_maze.maze_spirl.base_conf import *

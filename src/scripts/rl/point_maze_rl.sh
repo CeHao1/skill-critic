@@ -5,23 +5,23 @@ export DATA_DIR=./data
 # =================  Maze in SPiRL =================
 # SAC
 python src/train/train_rl.py \
---path=src/configs/rl/point_maze/maze_nav/SAC --seed=0 --gpu=0 \
+--path=src/configs/rl/point_maze/maze_spirl/SAC --seed=0 --gpu=0 \
 --prefix=spirl \
 
 # BC+finetune
 python src/train/train_rl.py \
---path=src/configs/rl/point_maze/maze_nav/bc_finetune --seed=0 --gpu=0 \
+--path=src/configs/rl/point_maze/maze_spirl/bc_finetune --seed=0 --gpu=0 \
 --prefix=spirl 
 
 # ================== Maze Navigation ==================
 # SAC
 python src/train/train_rl.py \
---path=src/configs/rl/point_maze/maze_traj/SAC --seed=0 --gpu=0 \
+--path=src/configs/rl/point_maze/maze_nav/SAC --seed=0 --gpu=0 \
 --prefix=nav 
 
 # BC+finetune
 python src/train/train_rl.py \
---path=src/configs/rl/point_maze/maze_traj/bc_finetune --seed=0 --gpu=0 \
+--path=src/configs/rl/point_maze/maze_nav/bc_finetune --seed=0 --gpu=0 \
 --prefix=nav 
 
 
