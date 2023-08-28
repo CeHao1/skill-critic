@@ -11,8 +11,8 @@ from src.modules.variational_inference import MultivariateGaussian
 from src.utils.checkpoint_utils import load_by_key, freeze_modules
 
 
-class CDsrcMdl(SkillPriorMdl):
-    """src model with closed-loop, conditional decoder low-level skill decoder."""
+class CDSPiRLMdl(SkillPriorMdl):
+    """SPiRL model with closed-loop, conditional decoder low-level skill decoder."""
     def build_network(self):
         assert not self._hp.use_convs  # currently only supports non-image inputs
         assert self._hp.cond_decode    # need to decode based on state for closed-loop low-level
@@ -71,7 +71,7 @@ class CDsrcMdl(SkillPriorMdl):
         return self._hp.action_dim
 
 
-class TimeIndexCDsrcMDL(CDsrcMdl):
+class TimeIndexCDSPiRLMDL(CDSPiRLMdl):
     # decoder input (s, z, idx)
 
     def build_network(self):
@@ -108,8 +108,8 @@ class TimeIndexCDsrcMDL(CDsrcMdl):
         output = output[..., :self.action_size]
         return output
 
-class ImageTimeIndexCDsrcMDL(TimeIndexCDsrcMDL, ImageSkillPriorMdl):
-    """src model with closed-loop, conditional decoder that operates on image observations."""
+class ImageTimeIndexCDSPiRLMDL(TimeIndexCDSPiRLMDL, ImageSkillPriorMdl):
+    """SPiRL model with closed-loop, conditional decoder that operates on image observations."""
     def _default_hparams(self):
         default_dict = ParamDict({
             'prior_input_res': 32,      # input resolution of prior images
@@ -126,7 +126,7 @@ class ImageTimeIndexCDsrcMDL(TimeIndexCDsrcMDL, ImageSkillPriorMdl):
         self.img_encoder = nn.Sequential(ResizeSpatial(self._hp.prior_input_res),  # encodes image inputs
                                          Encoder(self._updated_encoder_params()),
                                          RemoveSpatial(),)
-        return TimeIndexCDsrcMDL._build_inference_net(self)
+        return TimeIndexCDSPiRLMDL._build_inference_net(self)
 
     def _get_seq_enc(self, inputs):
         # stack input image sequence

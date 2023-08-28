@@ -71,8 +71,9 @@ class RLTrainer:
         # load from checkpoint
         self.global_step, self.n_update_steps, start_epoch = 0, 0, 0
         if args.resume or self.conf.ckpt_path is not None:
-            start_epoch = self.resume(args.resume, self.conf.ckpt_path)
-            self._hp.n_warmup_steps = 0     # no warmup if we reload from checkpoint!
+            start_epoch = self.resume(args.resume, self.conf.ckpt_path, args.resume_load_replay_buffer)
+            if not self.args.resume_warm_start:
+                self._hp.n_warmup_steps = 0     # no warmup if we reload from checkpoint!
 
         # start training/evaluation
         if args.mode == 'train':
@@ -280,7 +281,7 @@ class RLTrainer:
         if self.args.gpu != -1:
             os.environ["CUDA_VISIBLE_DEVICES"] = str(self.args.gpu)
 
-    def resume(self, ckpt, path=None):
+    def resume(self, ckpt, path=None, load_replay_buffer=True):
         path = os.path.join(self._hp.exp_path, 'weights') if path is None else os.path.join(path, 'weights')
         assert ckpt is not None  # need to specify resume epoch for loading checkpoint
         weights_file = CheckpointHandler.get_resume_ckpt_file(ckpt, path)
@@ -288,7 +289,8 @@ class RLTrainer:
         self.global_step, start_epoch, _ = \
             CheckpointHandler.load_weights(weights_file, self.agent,
                                            load_step=True, strict=self.args.strict_weight_loading)
-        self.agent.load_state(self._hp.exp_path)
+        if load_replay_buffer:
+            self.agent.load_state(self._hp.exp_path)
         self.agent.to(self.device)
         return start_epoch
 

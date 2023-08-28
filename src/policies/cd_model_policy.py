@@ -3,11 +3,9 @@ import numpy as np
 
 from src.utils.general_utils import AttrDict, ParamDict
 from src.utils.pytorch_utils import no_batchnorm_update
-from src.policies import Policy
-from src.agents import BaseAgent
+from src.policies.basic_policies import Policy
+from src.agents.agent import BaseAgent
 from src.modules.variational_inference import MultivariateGaussian, mc_kl_divergence
-
-from src.rl.policies.prior_policies import LearnedPriorAugmentedPolicy
 
 class CDModelPolicy(Policy):
 

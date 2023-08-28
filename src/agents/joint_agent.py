@@ -1,8 +1,8 @@
 import imp
 from src.agents.agent import HierarchicalAgent, FixedIntervalHierarchicalAgent, FixedIntervalTimeIndexedHierarchicalAgent
 
-from src.utils.general_utils import ParamDict, AttrDict, prefix_dict, map_dict
-
+from src.utils.general_utils import prefix_dict, map_dict
+from src.utils.py_utils import ParamDict, AttrDict
 from enum import Enum
 from tqdm import tqdm
 
@@ -16,7 +16,7 @@ class skill_critic_stages(Enum):
     HL_LLVAR = 5
     FIX_LL_PI = 6
 
-class JointInheritAgent(FixedIntervalTimeIndexedHierarchicalAgent):
+class JointAgent(FixedIntervalTimeIndexedHierarchicalAgent):
     def __init__(self, config):
         super().__init__(config)
         self.set_agents()
