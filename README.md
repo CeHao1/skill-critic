@@ -2,7 +2,7 @@
 
 #### [[Project Website]](https://sites.google.com/view/skill-critic) [[Paper]](https://arxiv.org/abs/2306.08388)
 
-Ce Hao Catherine Weaver$,  Chen Tang, Kenta Kawamoto, Masayoshi Tomizuka, Wei Zhan
+Ce Hao Catherine Weaver,  Chen Tang, Kenta Kawamoto, Masayoshi Tomizuka, Wei Zhan
 
 ## Requirements
 - python 3.8+
