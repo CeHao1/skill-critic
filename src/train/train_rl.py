@@ -15,12 +15,8 @@ from src.samplers.rollout_utils import RolloutSaver
 from src.samplers.sampler import Sampler
 from src.samplers.replay_buffer import RolloutStorage
 
-# WANDB_PROJECT_NAME = 'your_project_name'
-# WANDB_ENTITY_NAME = 'your_entity_name'
-
-WANDB_PROJECT_NAME = 'test'
-WANDB_ENTITY_NAME = 'cehao'
-
+WANDB_PROJECT_NAME = 'your_project_name'
+WANDB_ENTITY_NAME = 'your_entity_name'
 
 class RLTrainer:
     """Sets up RL training loop, instantiates all components, runs training."""
