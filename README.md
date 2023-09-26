@@ -42,6 +42,14 @@ create an account and then change the WandB entity and project name at the top o
 
 ### Train skill prior
 
+The scripts of training skill priors are at 
+```src/scripts/skill/point_maze.sh ``` and ```src/scripts/skill/reskill_fetch_robot.sh```.   
+Please run the whole scripts or run individual script. When the program finishhed, please copy the checkpoint to the weights directory.
+
+
+
+
+
 
 ### Train SPiRL baseline
 
