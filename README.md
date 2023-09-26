@@ -2,7 +2,7 @@
 
 #### [[Project Website]](https://sites.google.com/view/skill-critic) [[Paper]](https://arxiv.org/abs/2306.08388)
 
-Ce Hao Catherine Weaver,  Chen Tang, Kenta Kawamoto, Masayoshi Tomizuka, Wei Zhan
+Ce Hao, Catherine Weaver,  Chen Tang, Kenta Kawamoto, Masayoshi Tomizuka, Wei Zhan
 
 ## Requirements
 - python 3.8+
@@ -29,7 +29,7 @@ export EXP_DIR=./experiments
 export DATA_DIR=./data
 ```
 
-## Data 
+## Data collection
 For Maze experiments, please download the demonstration data from [SPiRL](https://github.com/clvrai/spirl/tree/master/spirl/data), at [drive](https://drive.google.com/uc?id=1pXM-EDCwFrfgUjxITBsR48FqW9gMoXYZ).
 Then place the them in the ```./data/point_maze```.   
 For Fetch robot experiments, please download demonstration data from [ReSkill](https://github.com/krishanrana/reskill/tree/main), at [drive](https://drive.google.com/drive/folders/1yTr_6fc-sHXK_CZkm8QIRTV9VgWxKpOE). Then use [converter.py](src/envs/wrapper/reskill_fetch_robot/convert.py) to convert the data format and finally put then in the ```./data/reskill_fetch_robot```.
